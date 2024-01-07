@@ -60,7 +60,7 @@
 									</td>
 									<td width="120">
 										<button
-											@click="getItem(item)"
+											@click="getProduct(item)"
 											type="button"
 											class="btn btn-primary"
 										>
@@ -118,15 +118,46 @@
 			const App = {
 				data() {
 					return {
-						catchProduct: {},
+						apiUrl: "https://vue3-course-api.hexschool.io/v2",
+						apiPath: "fabio20",
 						products: [],
+						catchProduct: {},
 					};
 				},
 				methods: {
-					getItem(item) {
-						this.catchProduct = { ...item };
-						console.log(item);
+					checklogin() {
+						axios
+							.post(`${this.apiUrl}/api/user/check`)
+							.then(() => {
+								this.getData();
+							})
+							.catch((err) => {
+								alert(err.response.data.message);
+								window.location = "login.html";
+							});
 					},
+					getData() {
+						axios
+							.get(`${this.apiUrl}/api/${this.apiPath}/admin/products`)
+							.then((res) => {
+								this.products = res.data.products;
+							})
+							.catch((err) => {
+								alert(err.res.data.message);
+							});
+					},
+					getProduct(item) {
+						this.catchProduct = item;
+					},
+				},
+				mounted() {
+					const token = document.cookie.replace(
+						/(?:(?:^|.*;\s*)fabio20token\s*=\s*([^;]*).*$)|^.*$/,
+						"$1"
+					);
+					axios.defaults.headers.common.Authorization = token;
+
+					this.checklogin();
 				},
 			};
 			Vue.createApp(App).mount("#app");
