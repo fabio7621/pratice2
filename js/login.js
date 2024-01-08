@@ -25,7 +25,7 @@ const App = {
         })
         .catch((err) => {
           //alert("錯誤輸入");
-          console.log("錯誤輸入");
+          console.log(`${err}錯誤資訊`);
         });
     },
   },
