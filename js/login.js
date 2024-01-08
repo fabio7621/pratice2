@@ -1,6 +1,7 @@
 const App = {
   data() {
     return {
+      apiUrl: "https://vue3-course-api.hexschool.io/v2",
       user: {
         username: "",
         password: "",
@@ -9,9 +10,8 @@ const App = {
   },
   methods: {
     login() {
-      const api = "https://vue3-course-api.hexschool.io/v2/admin/signin";
       axios
-        .post(api, this.user)
+        .post(`${this.apiUrl}/admin/signin`, this.user)
         .then((res) => {
           const { token, expired } = res.data;
           document.cookie = `fabio20token=${token};expires=${new Date(
@@ -24,7 +24,8 @@ const App = {
           };
         })
         .catch((err) => {
-          alert(輸入錯誤);
+          //alert("錯誤輸入");
+          console.log("錯誤輸入");
         });
     },
   },
