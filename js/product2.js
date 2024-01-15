@@ -1,11 +1,31 @@
+let productModal = null;
+let delProductModal = null;
 const App = {
 	data() {
 		return {
 			apiUrl: "https://vue3-course-api.hexschool.io/v2",
 			apiPath: "fabio20",
 			products: [],
-			catchProduct: {},
+			catchProduct: {
+				imgUrl: [],
+			},
+			isNew: false,
 		};
+	},
+	mounted() {
+		productModal = new bootstrap.Modal(document.getElementById("productModal"));
+
+		delProductModal = new bootstrap.Modal(
+			document.getElementById("delProductModal")
+		);
+
+		const token = document.cookie.replace(
+			/(?:(?:^|.*;\s*)fabio20token\s*=\s*([^;]*).*$)|^.*$/,
+			"$1"
+		);
+		axios.defaults.headers.common.Authorization = token;
+
+		this.checklogin();
 	},
 	methods: {
 		checklogin() {
@@ -29,15 +49,22 @@ const App = {
 					alert("找不到資訊");
 				});
 		},
-	},
-	mounted() {
-		const token = document.cookie.replace(
-			/(?:(?:^|.*;\s*)fabio20token\s*=\s*([^;]*).*$)|^.*$/,
-			"$1"
-		);
-		axios.defaults.headers.common.Authorization = token;
-
-		this.checklogin();
+		openModal(isNew, item) {
+			if (isNew === "new") {
+				this.catchProduct = {
+					imagesUrl: [],
+				};
+				this.isNew = true;
+				productModal.show();
+			} else if (isNew === "edit") {
+				this.catchProduct = { ...item };
+				this.isNew = false;
+				productModal.show();
+			} else if (isNew === "delete") {
+				this.catchProduct = { ...item };
+				delProductModal.show();
+			}
+		},
 	},
 };
 Vue.createApp(App).mount("#app");
